@@ -1,25 +1,34 @@
-require('dotenv').config()
+require("dotenv").config();
 
-const express = require('express')
-const workoutsRoutes = require('./routes/workouts')
+const express = require("express");
+const mongoose = require("mongoose");
+const workoutsRoutes = require("./routes/workouts");
 
 // express app
-const app = express()
+const app = express();
 
 // middlware
-app.use(express.json())
+app.use(express.json());
 
-app.use((req,res,next)=>{
-    console.log(req.path, req.method)
-    next()
-})
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next();
+});
 
 // routes
-app.use('/ninja/workouts',workoutsRoutes)
+app.use("/ninja/workouts", workoutsRoutes);
 
-// listen for requests
-app.listen(process.env.PORT,()=>{
-    console.log(`listening on port`, process.env.PORT)
-})
+// connect to dB
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    // listen for requests
+    app.listen(process.env.PORT, () => {
+      console.log(`connected to dB & listening on port`, process.env.PORT);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 
-process.env
+process.env;
