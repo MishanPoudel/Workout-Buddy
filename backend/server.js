@@ -1,13 +1,14 @@
-require("dotenv").config();
-
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const workoutsRoutes = require("./routes/workouts");
+require("dotenv").config();
 
 // express app
 const app = express();
 
-// middlware
+// middleware
+app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -16,19 +17,17 @@ app.use((req, res, next) => {
 });
 
 // routes
-app.use("/ninja/workouts", workoutsRoutes);
+app.use("/api/workouts", workoutsRoutes);
 
-// connect to dB
+// connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     // listen for requests
     app.listen(process.env.PORT, () => {
-      console.log(`connected to dB & listening on port`, process.env.PORT);
+      console.log(`Connected to MongoDB & listening on port`, process.env.PORT);
     });
   })
   .catch((error) => {
-    console.log(error);
+    console.error("Error connecting to MongoDB:", error);
   });
-
-process.env;
